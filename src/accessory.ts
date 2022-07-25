@@ -76,7 +76,7 @@ class ReplSwitch implements AccessoryPlugin {
         this.switchOn = value as boolean;
 
         if (this.switchOn) {
-          this.startRunner();
+          this.startRunner(client);
         } else {
           client.shellStop();
         }
@@ -112,10 +112,10 @@ class ReplSwitch implements AccessoryPlugin {
   }
 
   // Start runner
-  private async startRunner() {
+  private async startRunner(client: Crosis) {
     this.log("Starting runner...");
     this.switchOn = true;
-    await 
+    await client.shellRun();
     this.log("Stopping runner...");
     this.switchOn = false;
   }
