@@ -80,9 +80,9 @@ class ReplSwitch implements AccessoryPlugin {
 
           if (this.switchOn) {
             this.startRunner(client);
-            callback();
+            callback(undefined, 1);
           } else {
-            client.shellStop(30).then(() => {callback();}, () => {callback(Error('Timed Out'));});
+            client.shellStop(30).then(() => {callback(undefined, 0);}, () => {callback(Error('Timed Out'), 1);});
           }
 
         });
