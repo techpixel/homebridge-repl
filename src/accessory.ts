@@ -94,4 +94,23 @@ class ExampleSwitch implements AccessoryPlugin {
     ];
   }
 
+  /**
+   * Handle requests to get the current value of the "On" characteristic
+   */
+   handleOnGet() {
+    this.log.debug('Triggered GET On');
+
+    // set this to a valid value for On
+    const currentValue = 1;
+
+    return currentValue;
+  }
+
+  /**
+   * Handle requests to set the "On" characteristic
+   */
+  handleOnSet(value: any) {
+    this.log.debug('Triggered SET On:', value);
+  }
+
 }
