@@ -80,11 +80,10 @@ class ReplSwitch implements AccessoryPlugin {
 
           if (this.switchOn) {
             this.startRunner(client);
+            callback();
           } else {
-            client.shellStop();
+            client.shellStop(30).then(() => {callback();}, () => {callback(Error('Timed Out'));});
           }
-
-          callback();
 
         });
       });
@@ -119,10 +118,10 @@ class ReplSwitch implements AccessoryPlugin {
   async startRunner(client: Crosis) {
     this.log("Starting runner...");
     this.switchOn = true;
-    await client.shellRun();
-    this.log("Runner stopped...");
-    this.switchOn = false;
+    await client.shellRun().then(() => {
+      this.log("Runner stopped...");
+      this.switchOn = false;
+    });
   }
-
-  
+ 
 }
