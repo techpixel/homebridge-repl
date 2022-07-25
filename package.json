@@ -1,5 +1,5 @@
 {
-  "name": "homebridge-accessory-example",
+  "name": "homebridge-repl",
   "version": "1.0.0",
   "description": "An example accessory plugin for homebridge written in Typescript",
   "main": "dist/accessory.js",
@@ -24,15 +24,18 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/homebridge/homebridge-examples.git"
+    "url": "git://github.com/techpixel/homebridge-repl.git"
   },
   "bugs": {
-    "url": "http://github.com/homebridge/homebridge-examples/issues"
+    "url": "https://github.com/techpixel/homebridge-repl/issues"
   },
   "devDependencies": {
     "@types/node": "10.17.19",
-    "typescript": "^3.8.3",
+    "homebridge": "^1.0.4",
     "rimraf": "^3.0.2",
-    "homebridge": "^1.0.4"
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@techpixel/crosis4furrets": "^1.0.0"
   }
 }

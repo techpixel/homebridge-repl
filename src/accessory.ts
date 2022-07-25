@@ -11,6 +11,8 @@ import {
   Service
 } from "homebridge";
 
+import { Crosis } from "@techpixel/crosis4furrets";
+
 /*
  * IMPORTANT NOTICE
  *
@@ -40,10 +42,10 @@ let hap: HAP;
  */
 export = (api: API) => {
   hap = api.hap;
-  api.registerAccessory("ExampleSwitch", ExampleSwitch);
+  api.registerAccessory("ReplSwitch", ReplSwitch);
 };
 
-class ExampleSwitch implements AccessoryPlugin {
+class ReplSwitch implements AccessoryPlugin {
 
   private readonly log: Logging;
   private readonly name: string;
@@ -56,16 +58,31 @@ class ExampleSwitch implements AccessoryPlugin {
     this.log = log;
     this.name = config.name;
 
+    const client = new Crosis({
+      token: config.token, // connect.sid
+      replId:  config.replId // id of a repl
+    });
+
     this.switchService = new hap.Service.Switch(this.name);
     this.switchService.getCharacteristic(hap.Characteristic.On)
-      .on(CharacteristicEventTypes.GET, (callback: CharacteristicGetCallback) => {
+      .on(CharacteristicEventTypes.GET, (callback: CharacteristicGetCallback) => { // Get State
+
         log.info("Current state of the switch was returned: " + (this.switchOn? "ON": "OFF"));
         callback(undefined, this.switchOn);
+
       })
-      .on(CharacteristicEventTypes.SET, (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
+      .on(CharacteristicEventTypes.SET, (value: CharacteristicValue, callback: CharacteristicSetCallback) => { // Set State
+
         this.switchOn = value as boolean;
-        log.info("Switch state was set to: " + (this.switchOn? "ON": "OFF"));
+
+        if (this.switchOn) {
+          this.startRunner();
+        } else {
+          client.shellStop();
+        }
+
         callback();
+
       });
 
     this.informationService = new hap.Service.AccessoryInformation()
@@ -94,23 +111,14 @@ class ExampleSwitch implements AccessoryPlugin {
     ];
   }
 
-  /**
-   * Handle requests to get the current value of the "On" characteristic
-   */
-   handleOnGet() {
-    this.log.debug('Triggered GET On');
-
-    // set this to a valid value for On
-    const currentValue = 1;
-
-    return currentValue;
+  // Start runner
+  private async startRunner() {
+    this.log("Starting runner...");
+    this.switchOn = true;
+    await 
+    this.log("Stopping runner...");
+    this.switchOn = false;
   }
 
-  /**
-   * Handle requests to set the "On" characteristic
-   */
-  handleOnSet(value: any) {
-    this.log.debug('Triggered SET On:', value);
-  }
-
+  
 }
