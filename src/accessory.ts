@@ -64,8 +64,9 @@ class ReplSwitch implements AccessoryPlugin {
       replId:  config.replId // id of a repl
     });
 
+    this.switchService = new hap.Service.Switch(this.name);
+
     client.connect().then(() => {
-      this.switchService = new hap.Service.Switch(this.name);
       this.switchService.getCharacteristic(hap.Characteristic.On)
         .on(CharacteristicEventTypes.GET, (callback: CharacteristicGetCallback) => { // Get State
 
