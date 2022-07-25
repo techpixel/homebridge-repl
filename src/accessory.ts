@@ -12,7 +12,7 @@ import {
   Service
 } from "homebridge";
 
-import { Crosis } from "crosis4furrets";
+import { Crosis } from "@techpixel/crosis4furrets";
 
 /*
  * IMPORTANT NOTICE
