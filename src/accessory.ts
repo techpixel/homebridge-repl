@@ -64,28 +64,28 @@ class ReplSwitch implements AccessoryPlugin {
       replId:  config.replId // id of a repl
     });
 
-    client.connect();
+    client.connect().then(() => {
+      this.switchService = new hap.Service.Switch(this.name);
+      this.switchService.getCharacteristic(hap.Characteristic.On)
+        .on(CharacteristicEventTypes.GET, (callback: CharacteristicGetCallback) => { // Get State
 
-    this.switchService = new hap.Service.Switch(this.name);
-    this.switchService.getCharacteristic(hap.Characteristic.On)
-      .on(CharacteristicEventTypes.GET, (callback: CharacteristicGetCallback) => { // Get State
+          log.info("Current state of the switch was returned: " + (this.switchOn? "ON": "OFF"));
+          callback(undefined, this.switchOn);
 
-        log.info("Current state of the switch was returned: " + (this.switchOn? "ON": "OFF"));
-        callback(undefined, this.switchOn);
+        })
+        .on(CharacteristicEventTypes.SET, (value: CharacteristicValue, callback: CharacteristicSetCallback) => { // Set State
 
-      })
-      .on(CharacteristicEventTypes.SET, (value: CharacteristicValue, callback: CharacteristicSetCallback) => { // Set State
+          this.switchOn = value as boolean;
 
-        this.switchOn = value as boolean;
+          if (this.switchOn) {
+            this.startRunner(client);
+          } else {
+            client.shellStop();
+          }
 
-        if (this.switchOn) {
-          this.startRunner(client);
-        } else {
-          client.shellStop();
-        }
+          callback();
 
-        callback();
-
+        });
       });
 
     this.informationService = new hap.Service.AccessoryInformation()
