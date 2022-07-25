@@ -121,7 +121,7 @@ class ReplSwitch implements AccessoryPlugin {
   async startRunner(client: Crosis) {
     this.log("Starting runner...");
     this.switchOn = true;
-    await client.shellRun().then(() => {
+    client.shellRun().then(() => {
       this.log("Runner stopped...");
       this.switchOn = false;
     });
