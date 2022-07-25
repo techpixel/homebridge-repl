@@ -1,4 +1,5 @@
 import {
+  Accessory,
   AccessoryConfig,
   AccessoryPlugin,
   API,
@@ -63,6 +64,8 @@ class ReplSwitch implements AccessoryPlugin {
       replId:  config.replId // id of a repl
     });
 
+    client.connect();
+
     this.switchService = new hap.Service.Switch(this.name);
     this.switchService.getCharacteristic(hap.Characteristic.On)
       .on(CharacteristicEventTypes.GET, (callback: CharacteristicGetCallback) => { // Get State
@@ -86,8 +89,8 @@ class ReplSwitch implements AccessoryPlugin {
       });
 
     this.informationService = new hap.Service.AccessoryInformation()
-      .setCharacteristic(hap.Characteristic.Manufacturer, "Custom Manufacturer")
-      .setCharacteristic(hap.Characteristic.Model, "Custom Model");
+      .setCharacteristic(hap.Characteristic.Manufacturer, "Replit")
+      .setCharacteristic(hap.Characteristic.Model, "Repl");
 
     log.info("Switch finished initializing!");
   }
@@ -112,11 +115,11 @@ class ReplSwitch implements AccessoryPlugin {
   }
 
   // Start runner
-  private async startRunner(client: Crosis) {
+  async startRunner(client: Crosis) {
     this.log("Starting runner...");
     this.switchOn = true;
     await client.shellRun();
-    this.log("Stopping runner...");
+    this.log("Runner stopped...");
     this.switchOn = false;
   }
 

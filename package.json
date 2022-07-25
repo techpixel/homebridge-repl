@@ -33,7 +33,7 @@
     "@types/node": "10.17.19",
     "homebridge": "^1.0.4",
     "rimraf": "^3.0.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.10"
   },
   "dependencies": {
     "crosis4furrets": "^1.0.0"
