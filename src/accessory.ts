@@ -12,6 +12,7 @@ import {
   Service
 } from "homebridge";
 
+// @ts-ignore
 import { Crosis } from "@techpixel/crosis4furrets";
 
 /*
@@ -77,6 +78,8 @@ class ReplSwitch implements AccessoryPlugin {
         .on(CharacteristicEventTypes.SET, (value: CharacteristicValue, callback: CharacteristicSetCallback) => { // Set State
 
           this.switchOn = value as boolean;
+
+          log.info("Requested switch state: " + (this.switchOn? "ON": "OFF"));
 
           if (this.switchOn) {
             this.startRunner(client);
