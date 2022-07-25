@@ -36,6 +36,6 @@
     "typescript": "^3.9.10"
   },
   "dependencies": {
-    "crosis4furrets": "^1.0.0"
+    "@techpixel/crosis4furrets": "^1.0.0"
   }
 }
