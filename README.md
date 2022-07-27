@@ -6,8 +6,6 @@
 
 Control your repls from Homekit via Homebridge. Currently in development.
 
-![output](https://user-images.githubusercontent.com/68567672/181356714-981657db-454f-4d90-ac6c-0e52159214e0.gif)
-
 ## Why?
 
 Repl.it is a powerful online IDE that provides web-hosting capabilities. Now, you can manage your repl from Homekit utilizing this plugin.
