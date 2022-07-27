@@ -27,3 +27,9 @@ Repl.it is a powerful online IDE that provides web-hosting capabilities. Now, yo
     - Set "name", "token", and "replId" fields
 
 4. Finished!
+
+## Note
+Running your repl manually while using this plugin is highly unstable.
+ - This plugin cannot detect if the repl has already started running
+ - Use only when your repl is finished
+ - In case you edit or run your repl manually, restart Homebridge to ensure operation.
