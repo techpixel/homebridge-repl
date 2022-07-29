@@ -35,4 +35,4 @@ Running your repl manually while using this plugin is highly unstable.
  - ~~This plugin cannot detect if the repl has already started running~~
    - **New in v2.0.1** - Plugin can detect running repls (Unstable, does not work with manual stops)    
  - Use only when your repl is finished for more stable operation
- - ~In case you edit or run your repl manually, restart Homebridge to ensure proper operation.~~
+ - ~~In case you edit or run your repl manually, restart Homebridge to ensure proper operation.~~
