@@ -1,15 +1,15 @@
 import {
-  Accessory,
-  AccessoryConfig,
-  AccessoryPlugin,
-  API,
-  CharacteristicEventTypes,
-  CharacteristicGetCallback,
-  CharacteristicSetCallback,
-  CharacteristicValue,
-  HAP,
-  Logging,
-  Service
+    Accessory,
+    AccessoryConfig,
+    AccessoryPlugin,
+    API,
+    CharacteristicEventTypes,
+    CharacteristicGetCallback,
+    CharacteristicSetCallback,
+    CharacteristicValue,
+    HAP,
+    Logging,
+    Service
 } from "homebridge";
 
 // @ts-ignore
@@ -43,91 +43,102 @@ let hap: HAP;
  * Initializer function called when the plugin is loaded.
  */
 export = (api: API) => {
-  hap = api.hap;
-  api.registerAccessory("ReplSwitch", ReplSwitch);
+    hap = api.hap;
+    api.registerAccessory("ReplSwitch", ReplSwitch);
 };
 
 class ReplSwitch implements AccessoryPlugin {
 
-  private readonly log: Logging;
-  private readonly name: string;
-  private switchOn = false;
+    private readonly log: Logging;
+    private readonly name: string;
+    private switchOn = false;
 
-  private readonly switchService: Service;
-  private readonly informationService: Service;
+    private readonly switchService: Service;
+    private readonly informationService: Service;
 
-  constructor(log: Logging, config: AccessoryConfig, api: API) {
-    this.log = log;
-    this.name = config.name;
+    constructor(log: Logging, config: AccessoryConfig, api: API) {
+        this.log = log;
+        this.name = config.name;
 
-    const client = new Crosis({
-      token: config.token, // connect.sid
-      replId:  config.replId // id of a repl
-    });
-
-    this.switchService = new hap.Service.Switch(this.name);
-
-    client.connect().then(() => {
-      this.switchService.getCharacteristic(hap.Characteristic.On)
-        .on(CharacteristicEventTypes.GET, (callback: CharacteristicGetCallback) => { // Get State
-
-          log.info("Current state of the switch was returned: " + (this.switchOn? "ON": "OFF"));
-          callback(undefined, this.switchOn);
-
-        })
-        .on(CharacteristicEventTypes.SET, (value: CharacteristicValue, callback: CharacteristicSetCallback) => { // Set State
-
-          this.switchOn = value as boolean;
-
-          log.info("Requested switch state: " + (this.switchOn? "ON": "OFF"));
-
-          if (this.switchOn) {
-            this.startRunner(client);
-            callback(undefined, 1);
-          } else {
-            client.shellExec('kill 1', undefined, 500).then(
-              () => {callback(undefined, 0)}, 
-              () => {callback(Error('Timed Out'), 1)
-            });
-          }
-
+        const client = new Crosis({
+            token: config.token, // connect.sid
+            replId: config.replId // id of a repl
         });
-      });
 
-    this.informationService = new hap.Service.AccessoryInformation()
-      .setCharacteristic(hap.Characteristic.Manufacturer, "Replit")
-      .setCharacteristic(hap.Characteristic.Model, "Repl");
+        this.switchService = new hap.Service.Switch(this.name);
 
-    log.info("Switch finished initializing!");
+        client.connect().then(() => {
+            this.switchService.getCharacteristic(hap.Characteristic.On)
+                .on(CharacteristicEventTypes.GET, (callback: CharacteristicGetCallback) => { // Get State
+                    this.switchOn = client.shellState;
+
+                    log.info("Current state of the switch was returned: " + (this.switchOn ? "ON" : "OFF"));
+                    callback(undefined, this.switchOn);
+
+                })
+                .on(CharacteristicEventTypes.SET, (value: CharacteristicValue, callback: CharacteristicSetCallback) => { // Set State
+
+                    this.switchOn = value as boolean;
+
+                    log.info("Requested switch state: " + (this.switchOn ? "ON" : "OFF"));
+
+                    if (this.switchOn) {
+                        this.startRunner(client);
+                        callback(undefined, 1);
+                    } else {
+                        try {                        
+                            client.shellExec('kill 1', undefined, 500).then(
+                                () => { callback(undefined, 0) },
+                                () => {
+                                    callback(Error('Timed Out'), 1)
+                                });
+                        } catch (err) {
+                            this.log("Encountered an error:\n", err)            
+                        }
+                    }
+
+                });
+        });
+
+        this.informationService = new hap.Service.AccessoryInformation()
+            .setCharacteristic(hap.Characteristic.Manufacturer, "Replit")
+            .setCharacteristic(hap.Characteristic.Model, "Repl");
+
+        log.info("Switch finished initializing!");
+    }
+
+    /*
+     * This method is optional to implement. It is called when HomeKit ask to identify the accessory.
+     * Typical this only ever happens at the pairing process.
+     */
+    identify(): void {
+        this.log("Identify!");
+    }
+
+    /*
+     * This method is called directly after creation of this instance.
+     * It should return all services which should be added to the accessory.
+     */
+    getServices(): Service[] {
+        return [
+            this.informationService,
+            this.switchService,
+        ];
+    }
+
+    // Start runner
+    async startRunner(client: Crosis) {
+        this.log("Starting runner...");
+        this.switchOn = true;
+
+        try {
+            client.shellRun().then(() => {
+                this.log("Runner stopped...");
+                this.switchOn = false;
+            });
+        } catch (err) {
+            this.log("Encountered an error:\n", err)
+        }
   }
 
-  /*
-   * This method is optional to implement. It is called when HomeKit ask to identify the accessory.
-   * Typical this only ever happens at the pairing process.
-   */
-  identify(): void {
-    this.log("Identify!");
-  }
-
-  /*
-   * This method is called directly after creation of this instance.
-   * It should return all services which should be added to the accessory.
-   */
-  getServices(): Service[] {
-    return [
-      this.informationService,
-      this.switchService,
-    ];
-  }
-
-  // Start runner
-  async startRunner(client: Crosis) {
-    this.log("Starting runner...");
-    this.switchOn = true;
-    client.shellRun().then(() => {
-      this.log("Runner stopped...");
-      this.switchOn = false;
-    });
-  }
- 
 }
