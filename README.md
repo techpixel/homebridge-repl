@@ -23,7 +23,7 @@ Repl.it is a powerful online IDE that provides web-hosting capabilities. Now, yo
 
 2. **Find your repl's ID**
     - Use this [link](https://ally.furret.codes/replid)
-    - Go to the repl's shell and enter `echo $REPL_ID`
+    - OR Go to the repl's shell and enter `echo $REPL_ID`
     
 3. **Install the plugin and edit the configuration**
     - Set "name", "token", and "replId" fields
@@ -32,6 +32,7 @@ Repl.it is a powerful online IDE that provides web-hosting capabilities. Now, yo
 
 ## Note
 Running your repl manually while using this plugin is highly unstable.
- - This plugin cannot detect if the repl has already started running
- - Use only when your repl is finished
- - In case you edit or run your repl manually, restart Homebridge to ensure operation.
+ - ~~This plugin cannot detect if the repl has already started running~~
+   - **New in v2.0.1** - Plugin can detect running repls (Unstable, does not work with manual stops)    
+ - Use only when your repl is finished for more stable operation
+ - ~In case you edit or run your repl manually, restart Homebridge to ensure proper operation.~~
