@@ -4,7 +4,7 @@
 
 # homebridge-repl
 
-Control your repls from Homekit via Homebridge. Currently in development.
+Control your repls from Homekit via Homebridge.
 
 ![Screenshot of the Homebridge-repl Plugin in Homekit](Screenshot.png)
 
